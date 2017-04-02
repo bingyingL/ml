@@ -80,3 +80,24 @@ void Print(T *mtx, unsigned int x, unsigned int y) {
 			std::cout << mtx[i] << " ";
 	}
 }
+
+
+
+template<typename T>
+bool SubFeature(const T*const feature, const unsigned int x, const unsigned int y,
+	T*const subfeature, std::vector<unsigned int> subx, std::vector<unsigned int> suby) {
+	if (feature == nullptr || subfeature == nullptr) {
+		std::cout << "[SubFeature Err] : feature Or subfeature Is Empty" << std::endl;
+		return false;
+	}
+	if (x == 0 || y == 0) {
+		std::cout << "[SubFeature Err] : x Or y Is 0" << std::endl;
+		return false;
+	}
+	if (subx.empty() || suby.empty()) {
+		std::cout << "[SubFeature Err] : subx Or suby Is Empty" << std::endl;
+		return false;
+	}
+	for()
+
+}
