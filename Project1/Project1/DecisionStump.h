@@ -44,14 +44,17 @@ public:
 	DecisionStump() {};
 	DecisionStump(const T*const pSortedFeature, const ui *const pSortedIndex, const ui uiSampleCnts, const  ui uiFeatureDims, const std::vector<char> vLabel, const std::vector<double> vWeight);
 	bool Initialize(const T*const pSortedFeature, const ui *const pSortedIndex, const ui uiSampleCnts, const  ui uiFeatureDims, const std::vector<char> vLabel, const std::vector<double> vWeight);
-	//train 
+
 	bool Train(void);
 	bool Test(const std::vector<T> &vSample, char &cLabel, double &dConfidence);
+	//to save memory
+	void MinClassifier(void);
+
 	char GetDir(void) { return m_cDir; };
 	T GetSplit(void) { return m_tSplit; };
 	ui GetDim(void) { return m_uiDim; };
 	double GetTrainErr(void) { return m_dErr; };
-	std::vector<char> GetTrainRes(void) { return m_vTrainRes; };
+	//std::vector<char> GetTrainRes(void) { return m_vTrainRes; };
 };
 
 template<typename T>
@@ -207,6 +210,14 @@ inline bool DecisionStump<T>::Test(const std::vector<T> &vSample, char &cLabel, 
 	}
 	dConfidence = 1;
 	return true;
+}
+
+template<typename T>
+inline void DecisionStump<T>::MinClassifier(void)
+{
+	m_vLabel.clear();
+	m_vWeight.clear();
+	m_vTrainRes.clear();
 }
 
 

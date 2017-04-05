@@ -64,9 +64,7 @@ public:
 	bool Initialize(const T * const pFeature, const ui * const pIndex, const ui uiSampleCnts, const ui uiFeatureDims, const std::vector<char> vLabel, const std::vector<double> vWeight = {});
 	//this fun should be run before Train()
 	bool SetTrainPara(const ui uiMaxWeakerCounts, const double dMaxWeakerErr, const double m_dMinSumErr);
-	//train 
 	bool Train(void);
-	//test
 	bool Test(const std::vector<T> vSample, char &cLabel, double &dConfidence);
 };
 
@@ -214,9 +212,17 @@ inline bool AdaBoost<WEAKER, T>::Train(void)
 		//get this weaker's weight
 		double alpha = 0.5*log((1.0 - aWeaker.GetTrainErr()) / (aWeaker.GetTrainErr()+1e-6));
 
-		//push weaker para
-		m_vWeakerSet.push_back(aWeaker);
-		m_vWeakerWeight.push_back(alpha);
+		//update data weight 
+		for (ui i = 0; i != m_uiSampleCnts; ++i) {
+			if (aWeaker.m_vTrainRes[i] != m_vLabel[i])
+				m_vWeight[i] *= exp(alpha);
+			else
+				m_vWeight[i] *= exp(-alpha);
+		}
+		if (false == NormalizeWeight(m_vWeight)) {
+			break;		
+		}
+
 
 		//cal the sum err and get the tmp label train res
 		//reference:Probabilistic Boosting-Tree: Learning Discriminative Models for Classification,Recognition, and Clustering Recognition, and Clustering
@@ -230,9 +236,14 @@ inline bool AdaBoost<WEAKER, T>::Train(void)
 		}
 		double errrate = static_cast<double>(errcounts) / static_cast<double>(m_uiSampleCnts);
 
-		//stop condition
+		//push weaker para
 		std::cout << "Dim:"  << aWeaker.GetDim()      << " Split:"  << aWeaker.GetSplit() << " Dir:" << (int)aWeaker.GetDir() 
 			      << " Err:" << aWeaker.GetTrainErr() << " Sumerr=" << errrate            << std::endl;
+		aWeaker.MinClassifier();
+		m_vWeakerSet.push_back(aWeaker);
+		m_vWeakerWeight.push_back(alpha);
+
+		//stop condition
 		if (errrate < m_dMinSumErr) {
 			std::cout << "[AdaBoost Stop] : SumErr < MinSumErr" << std::endl;
 			break;
@@ -242,16 +253,6 @@ inline bool AdaBoost<WEAKER, T>::Train(void)
 			break;
 		}
 
-		//update data weight 
-		for (ui i = 0; i != m_uiSampleCnts; ++i) {
-			if (aWeaker.m_vTrainRes[i] != m_vLabel[i])
-				m_vWeight[i] *= exp(alpha);
-			else
-				m_vWeight[i] *= exp(-alpha);
-		}
-		if (false == NormalizeWeight(m_vWeight)) {
-			break;		
-		}
 	}
 
 	//cal the train res and the confidendce 

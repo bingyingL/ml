@@ -116,6 +116,7 @@
     <ClInclude Include="AdaBoost.h" />
     <ClInclude Include="DecisionStump.h" />
     <ClInclude Include="Common.h" />
+    <ClInclude Include="ProbabilisticBoostingTree.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

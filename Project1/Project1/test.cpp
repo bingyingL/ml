@@ -7,13 +7,15 @@
 #include <algorithm>
 #include <numeric>
 #include <memory>
-
+#include <ctime>
 
 using namespace std;
 
 
 
 int main(void) {
+
+	srand(unsigned(time(0)));
 
 	//int a[2][3] = { {1,2,3},{4,5,6} };
 	////int *b = &a[0][0];
@@ -126,23 +128,23 @@ int main(void) {
 		else
 			label.push_back(-1);
 	}
-	SortFeature(ftr.get(), ind.get(), featuredim, samplecounts);
+	SortFeature(ftr.get(), ind.get(), samplecounts, featuredim);
 
 	AdaBoost<DecisionStump<double>, double> bbb;
 	bbb.Initialize(ftr.get(), ind.get(), samplecounts, featuredim, label);
 	bbb.SetTrainPara(300, 0.49, 0.01);
 	bbb.Train();
-	Print(ftr.get(), featuredim, samplecounts);
-	for (int x = 0; x != featuredim - 1; ++x) {
-		for (int y = 0; y != samplecounts - 1; ++y) {
-			if (*(ftr.get() + x*samplecounts + y) == *(ftr.get() + x*samplecounts + y + 1))
-				*(ftr.get() + x*samplecounts + y) = 0;
-			else
-				*(ftr.get() + x*samplecounts + y) = 1;
-		}
-	}
-	cout << " " << endl;
-	Print(ftr.get(), featuredim, samplecounts);
+	//Print(ftr.get(), featuredim, samplecounts);
+	//for (int x = 0; x != featuredim - 1; ++x) {
+	//	for (int y = 0; y != samplecounts - 1; ++y) {
+	//		if (*(ftr.get() + x*samplecounts + y) == *(ftr.get() + x*samplecounts + y + 1))
+	//			*(ftr.get() + x*samplecounts + y) = 0;
+	//		else
+	//			*(ftr.get() + x*samplecounts + y) = 1;
+	//	}
+	//}
+	//cout << " " << endl;
+	//Print(ftr.get(), featuredim, samplecounts);
 
 
 	////test res and test fun
